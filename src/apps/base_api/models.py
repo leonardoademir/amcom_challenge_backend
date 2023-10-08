@@ -5,6 +5,8 @@ from django.core.validators import (
     RegexValidator,
     MinLengthValidator,
 )
+from datetime import datetime
+from django.utils import timezone
 
 
 class ProductModel(models.Model):
@@ -102,7 +104,7 @@ class SellModel(models.Model):
         unique=True,
     )
 
-    sell_date = models.DateTimeField(null=True)
+    sell_date = models.DateTimeField(default=timezone.now, null=True)
 
     client = models.ForeignKey(ClientModel, models.DO_NOTHING)
 
@@ -127,9 +129,29 @@ class SellProductModel(models.Model):
 
     quantity = models.PositiveIntegerField(default=1)
 
-    def subtotal(self):
+    def subtotal_comission(self):
         # Calculate the subtotal price for this product in the sell
-        return self.product.unit_value * self.quantity
+        subtotal = self.product_id.unit_value * self.quantity
+
+        # Get the current date and time
+        sell_date = self.sell_id.sell_date
+
+        # Format the first three characters of the weekday as a string
+        day_week = sell_date.strftime("%a")
+        comission = ComissionModel.objects.filter(
+            day_week=day_week.upper()
+        ).first()
+
+        if self.product_id.comis_percentage < comission.day_comission_perc_min:
+            treated_comission = comission.day_comission_perc_min
+        elif (
+            self.product_id.comis_percentage > comission.day_comission_perc_max
+        ):
+            treated_comission = comission.day_comission_perc_max
+        else:
+            treated_comission = self.product_id.comis_percentage
+
+        return round(subtotal * (treated_comission * 0.1), 2)
 
     class Meta:
         db_table = "sell_product"
