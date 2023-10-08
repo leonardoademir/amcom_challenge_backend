@@ -53,3 +53,33 @@ class ClientModel(models.Model):
     )
 
     # Any other needed attribute for specific client model
+
+
+class ComissionModel(models.Model):
+    day_week = models.CharField(max_length=3)
+    day_comission_perc_min = models.FloatField(
+        validators=[
+            MinValueValidator(
+                limit_value=0.0,
+                message="Value must be greater than or equal to 0.0",
+            ),
+            MaxValueValidator(
+                limit_value=100.0,
+                message="Value must be less than or equal to 100.0",
+            ),
+        ],
+        null=True,
+    )
+    day_comission_perc_max = models.FloatField(
+        validators=[
+            MinValueValidator(
+                limit_value=0.0,
+                message="Value must be greater than or equal to 0.0",
+            ),
+            MaxValueValidator(
+                limit_value=100.0,
+                message="Value must be less than or equal to 100.0",
+            ),
+        ],
+        null=True,
+    )

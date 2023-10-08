@@ -4,6 +4,7 @@ from .models import (
     PersonModel,
     SellerModel,
     ClientModel,
+    ComissionModel,
 )
 
 
@@ -32,4 +33,10 @@ class ClientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ClientModel
+        fields = "__all__"
+
+
+class ComissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ComissionModel
         fields = "__all__"

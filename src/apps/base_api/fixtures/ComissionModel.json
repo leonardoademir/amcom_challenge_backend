@@ -1,0 +1,65 @@
+[
+    {
+      "model": "base_api.ComissionModel",
+      "pk": 1,
+      "fields": {
+        "day_week": "MON",
+        "day_comission_perc_min": 3.0,
+        "day_comission_perc_max": 10
+      }
+    },
+    {
+        "model": "base_api.ComissionModel",
+        "pk": 2,
+        "fields": {
+          "day_week": "TUE",
+          "day_comission_perc_min": 2.0,
+          "day_comission_perc_max": 3
+        }
+    },
+    {
+        "model": "base_api.ComissionModel",
+        "pk": 3,
+        "fields": {
+          "day_week": "WED",
+          "day_comission_perc_min": null,
+          "day_comission_perc_max": 10
+        }
+      },
+      {
+        "model": "base_api.ComissionModel",
+        "pk": 4,
+        "fields": {
+          "day_week": "THU",
+          "day_comission_perc_min": 10,
+          "day_comission_perc_max": null
+        }
+      },
+      {
+        "model": "base_api.ComissionModel",
+        "pk": 5,
+        "fields": {
+          "day_week": "FRI",
+          "day_comission_perc_min": 1,
+          "day_comission_perc_max": 2
+        }
+      },
+      {
+        "model": "base_api.ComissionModel",
+        "pk": 6,
+        "fields": {
+          "day_week": "SAT",
+          "day_comission_perc_min": null,
+          "day_comission_perc_max": null
+        }
+      },
+      {
+        "model": "base_api.ComissionModel",
+        "pk": 7,
+        "fields": {
+          "day_week": "SUN",
+          "day_comission_perc_min": 4,
+          "day_comission_perc_max": 15
+        }
+      }
+]
