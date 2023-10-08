@@ -3,6 +3,7 @@ from django.core.validators import (
     MinValueValidator,
     MaxValueValidator,
     RegexValidator,
+    MinLengthValidator,
 )
 
 
@@ -83,3 +84,53 @@ class ComissionModel(models.Model):
         ],
         null=True,
     )
+
+
+class SellModel(models.Model):
+    invoice = models.CharField(
+        max_length=10,
+        validators=[
+            RegexValidator(
+                regex=r"^[0-9]+$",
+                message="Only numeric characters are allowed.",
+                code="invalid_numeric_value",
+            ),
+            MinLengthValidator(
+                limit_value=10, message="Invoice must have only 10 characters."
+            ),
+        ],
+        unique=True,
+    )
+
+    sell_date = models.DateTimeField(null=True)
+
+    client = models.ForeignKey(ClientModel, models.DO_NOTHING)
+
+    seller = models.ForeignKey(SellerModel, models.DO_NOTHING)
+
+    products = models.ManyToManyField(ProductModel, through="SellProductModel")
+
+
+class SellProductModel(models.Model):
+    product_id = models.ForeignKey(
+        ProductModel,
+        models.DO_NOTHING,
+        db_column="product_id",
+        related_name="product_sellproduct",
+    )
+
+    sell_id = models.ForeignKey(
+        SellModel,
+        models.DO_NOTHING,
+        related_name="sell_sellproduct",
+    )
+
+    quantity = models.PositiveIntegerField(default=1)
+
+    def subtotal(self):
+        # Calculate the subtotal price for this product in the sell
+        return self.product.unit_value * self.quantity
+
+    class Meta:
+        db_table = "sell_product"
+        unique_together = (("product_id", "sell_id"),)
