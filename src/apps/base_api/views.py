@@ -18,8 +18,10 @@ from .models import (
 )
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
+from django.http import JsonResponse
 from rest_framework import status
-from datetime import datetime
+from rest_framework.decorators import action
+from datetime import datetime, timedelta
 from utils.helpers import check_day_week
 
 
@@ -39,6 +41,47 @@ class SellerViewSet(ModelViewSet):
     queryset = SellerModel.objects.all()
     serializer_class = SellerSerializer
     http_method_names = ["post", "get", "patch", "delete"]
+
+    @action(detail=False, methods=["GET"], name="get_comission")
+    def get_comission(self, request, *args, **kwargs):
+        sellers = self.queryset
+        start_date = datetime.strptime(
+            request.query_params.get("start_date"), "%d/%m/%Y"
+        )
+        end_date = datetime.strptime(
+            request.query_params.get("end_date"), "%d/%m/%Y"
+        )
+
+        data = []
+        for seller in sellers:
+            sells = SellModel.objects.filter(
+                seller=seller,
+                sell_date__range=(
+                    start_date,
+                    end_date + timedelta(days=1),
+                ),
+            ).all()
+            if len(sells) > 0:
+                total_comission = 0
+                for sell in sells:
+                    sell_product = sell.sell_sellproduct.first()
+                    if sell_product is not None:
+                        total_comission += sell_product.subtotal_comission()
+                data.append(
+                    {
+                        "seller": PersonSerializer(seller.id_person).data,
+                        "total_comission": "{:.2f}".format(total_comission),
+                    }
+                )
+            else:
+                data.append(
+                    {
+                        "seller": PersonSerializer(seller.id_person).data,
+                        "total_comission": "Didn't sell anything on the date range specified.",
+                    }
+                )
+
+        return Response({"status": 200, "data": data})
 
 
 class ClientViewSet(ModelViewSet):
