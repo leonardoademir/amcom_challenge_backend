@@ -5,7 +5,6 @@ from django.core.validators import (
     RegexValidator,
     MinLengthValidator,
 )
-from datetime import datetime
 from django.utils import timezone
 
 
@@ -13,7 +12,9 @@ class ProductModel(models.Model):
     code = models.CharField(max_length=200)
     description = models.CharField(max_length=300)
     unit_value = models.FloatField()
-    comis_percentage = models.FloatField(
+    comis_percentage = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
         validators=[
             MinValueValidator(
                 limit_value=0.0,
@@ -23,7 +24,7 @@ class ProductModel(models.Model):
                 limit_value=100.0,
                 message="Value must be less than or equal to 100.0",
             ),
-        ]
+        ],
     )
 
 
