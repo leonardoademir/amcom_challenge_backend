@@ -52,6 +52,8 @@ class ComissionSerializer(serializers.ModelSerializer):
 
 class SellSerializer(serializers.ModelSerializer):
     products = ProductSerializer(many=True, read_only=True)
+    client = ClientSerializer()
+    seller = SellerSerializer()
 
     class Meta:
         model = SellModel

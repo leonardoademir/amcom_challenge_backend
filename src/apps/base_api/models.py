@@ -113,6 +113,8 @@ class SellModel(models.Model):
 
     products = models.ManyToManyField(ProductModel, through="SellProductModel")
 
+    deleted = models.BooleanField(default=0)
+
 
 class SellProductModel(models.Model):
     product_id = models.ForeignKey(

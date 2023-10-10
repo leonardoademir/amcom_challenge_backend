@@ -18,9 +18,9 @@ from .models import (
 )
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
+from django_filters import rest_framework as filters
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError as DRFValidationError
 from datetime import datetime, timedelta
 from utils.helpers import check_day_week
 
@@ -120,6 +120,10 @@ class SellViewSet(ModelViewSet):
     queryset = SellModel.objects.all()
     serializer_class = SellSerializer
     http_method_names = ["post", "get", "patch", "delete"]
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = {
+        "deleted": ["exact"],
+    }
 
     def create(self, request, *args, **kwargs):
         client_id = request.data.get("client")
