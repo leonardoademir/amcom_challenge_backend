@@ -56,6 +56,7 @@ class SellerViewSet(ModelViewSet):
         for seller in sellers:
             sells = SellModel.objects.filter(
                 seller=seller,
+                deleted=False,
                 sell_date__range=(
                     start_date,
                     end_date + timedelta(days=1),
@@ -63,14 +64,17 @@ class SellerViewSet(ModelViewSet):
             ).all()
             if len(sells) > 0:
                 total_comission = 0
+                total_sells = len(sells)
                 for sell in sells:
                     sell_product = sell.sell_sellproduct.first()
                     if sell_product is not None:
                         total_comission += sell_product.subtotal_comission()
+
                 data.append(
                     {
                         "seller": PersonSerializer(seller.id_person).data,
                         "total_comission": "{:.2f}".format(total_comission),
+                        "total_sells": total_sells,
                     }
                 )
             else:
@@ -78,6 +82,7 @@ class SellerViewSet(ModelViewSet):
                     {
                         "seller": PersonSerializer(seller.id_person).data,
                         "total_comission": "Didn't sell anything on the date range specified.",
+                        "total_sells": 0,
                     }
                 )
 

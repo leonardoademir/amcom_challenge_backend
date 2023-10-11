@@ -11,9 +11,21 @@ from .models import (
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    quantity = serializers.SerializerMethodField()
+
     class Meta:
         model = ProductModel
         fields = "__all__"
+
+    def get_quantity(self, obj: ProductModel) -> dict:
+        try:
+            quantity = obj.product_sellproduct.first().quantity
+            if quantity is not None:
+                return quantity
+        except Exception as e:
+            print(str(e))
+            return None
+        return None
 
 
 class PersonSerializer(serializers.ModelSerializer):
