@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db import models
 from django.core.validators import (
     MinValueValidator,
@@ -144,17 +145,31 @@ class SellProductModel(models.Model):
         comission = ComissionModel.objects.filter(
             day_week=day_week.upper()
         ).first()
-
-        if self.product_id.comis_percentage < comission.day_comission_perc_min:
-            treated_comission = comission.day_comission_perc_min
-        elif (
-            self.product_id.comis_percentage > comission.day_comission_perc_max
-        ):
-            treated_comission = comission.day_comission_perc_max
+        if comission.day_comission_perc_min is not None:
+            if Decimal(self.product_id.comis_percentage) < Decimal(
+                comission.day_comission_perc_min
+            ):
+                treated_comission = comission.day_comission_perc_min
+            elif comission.day_comission_perc_max is not None:
+                if Decimal(self.product_id.comis_percentage) > Decimal(
+                    comission.day_comission_perc_max
+                ):
+                    treated_comission = comission.day_comission_perc_max
+                else:
+                    treated_comission = self.product_id.comis_percentage
+        elif comission.day_comission_perc_max is not None:
+            if Decimal(self.product_id.comis_percentage) > Decimal(
+                comission.day_comission_perc_max
+            ):
+                treated_comission = comission.day_comission_perc_max
+            else:
+                treated_comission = self.product_id.comis_percentage
         else:
             treated_comission = self.product_id.comis_percentage
 
-        return round(subtotal * (treated_comission * 0.1), 2)
+        return round(
+            Decimal(subtotal) * (Decimal(treated_comission) * Decimal(0.1)), 2
+        )
 
     class Meta:
         db_table = "sell_product"
