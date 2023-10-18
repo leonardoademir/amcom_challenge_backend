@@ -35,4 +35,4 @@ py src/manage.py runserver</br>
 ### :wrench: Testando</br>
 Para testar a aplicação é necessário abrir o terminal, ir para tests e executar o comando de teste.</br>
 *cd src</br>
-py manage.py test base_app</br>*
+py manage.py test base_api</br>*
