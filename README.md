@@ -29,7 +29,7 @@ py -m venv venv</br>
 deverá aparecer um (venv) no início do seu console* </br>
 pip install -r requirements.txt</br>
 py src/manage.py migrate</br>
-py src/manage.py loaddata src/apps/base_api/fixtures.ComissionModel.json
+py src/manage.py loaddata src/apps/base_api/fixtures.ComissionModel.json </br>
 py src/manage.py runserver</br>
 
 
